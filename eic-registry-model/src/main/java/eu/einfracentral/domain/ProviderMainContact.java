@@ -41,10 +41,10 @@ public class Contact {
     /**
      * Telephone of the service/resource's main contact person/manager.
      */
-    @XmlElement(required = true)
-    @ApiModelProperty(position = 4, example = "String (required)", required = true)
-    @FieldValidation
-    private String tel;
+    @XmlElement
+    @ApiModelProperty(position = 4, example = "String (optional)")
+    @FieldValidation(nullable = true)
+    private String phone;
 
     /**
      * Position of the service/resource's main contact person/manager.
@@ -57,11 +57,11 @@ public class Contact {
     public Contact() {
     }
 
-    public Contact(String firstName, String lastName, String email, String tel, String position) {
+    public Contact(String firstName, String lastName, String email, String phone, String position) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.tel = tel;
+        this.phone = phone;
         this.position = position;
     }
 
@@ -71,7 +71,7 @@ public class Contact {
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", tel='" + tel + '\'' +
+                ", phone='" + phone + '\'' +
                 ", position='" + position + '\'' +
                 '}';
     }
@@ -100,12 +100,12 @@ public class Contact {
         this.email = email;
     }
 
-    public String getTel() {
-        return tel;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setTel(String tel) {
-        this.tel = tel;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPosition() {
