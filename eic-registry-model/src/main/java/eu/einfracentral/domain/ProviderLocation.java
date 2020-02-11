@@ -1,6 +1,7 @@
 package eu.einfracentral.domain;
 
 import eu.einfracentral.annotation.FieldValidation;
+import eu.einfracentral.annotation.VocabularyValidation;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -14,34 +15,18 @@ public class ProviderLocation {
 
     // Provider's Location Information
     /**
-     * Provider's location name.
+     * Provider's location street name and number.
      */
     @XmlElement(required = true)
     @ApiModelProperty(position = 1, example = "String (required)", required = true)
     @FieldValidation
-    private String name;
-
-    /**
-     * Provider's location street.
-     */
-    @XmlElement(required = true)
-    @ApiModelProperty(position = 2, example = "String (required)", required = true)
-    @FieldValidation
-    private String street;
-
-    /**
-     * Provider's location street number.
-     */
-    @XmlElement(required = true)
-    @ApiModelProperty(position = 3, example = "String (required)", required = true)
-    @FieldValidation
-    private String number;
+    private String streetNameAndNumber;
 
     /**
      * Provider's location postal code.
      */
     @XmlElement(required = true)
-    @ApiModelProperty(position = 4, example = "String (required)", required = true)
+    @ApiModelProperty(position = 2, example = "String (required)", required = true)
     @FieldValidation
     private String postalCode;
 
@@ -49,64 +34,54 @@ public class ProviderLocation {
      * Provider's location city.
      */
     @XmlElement(required = true)
-    @ApiModelProperty(position = 5, example = "String (required)", required = true)
+    @ApiModelProperty(position = 3, example = "String (required)", required = true)
     @FieldValidation
     private String city;
 
     /**
      * Provider's location region.
      */
-    @XmlElement(required = true)
-    @ApiModelProperty(position = 6, example = "String (required)", required = true)
-    @FieldValidation
+    @XmlElement
+    @ApiModelProperty(position = 4, example = "String (optional)")
+    @FieldValidation(nullable = true)
     private String region;
+
+    /**
+     * Provider's location country.
+     */
+    @XmlElement(required = true)
+    @ApiModelProperty(position = 5, example = "String (required)", required = true)
+    @VocabularyValidation(type = Vocabulary.Type.PLACE)
+    private String country;
 
     public ProviderLocation() {
     }
 
-    public ProviderLocation(String name, String street, String number, String postalCode, String city, String region) {
-        this.name = name;
-        this.street = street;
-        this.number = number;
+    public ProviderLocation(String streetNameAndNumber, String postalCode, String city, String region, String country) {
+        this.streetNameAndNumber = streetNameAndNumber;
         this.postalCode = postalCode;
         this.city = city;
         this.region = region;
+        this.country = country;
     }
 
     @Override
     public String toString() {
         return "ProviderLocation{" +
-                "name='" + name + '\'' +
-                ", street='" + street + '\'' +
-                ", number='" + number + '\'' +
+                "streetNameAndNumber='" + streetNameAndNumber + '\'' +
                 ", postalCode='" + postalCode + '\'' +
                 ", city='" + city + '\'' +
                 ", region='" + region + '\'' +
+                ", country='" + country + '\'' +
                 '}';
     }
 
-    public String getName() {
-        return name;
+    public String getStreetNameAndNumber() {
+        return streetNameAndNumber;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
+    public void setStreetNameAndNumber(String streetNameAndNumber) {
+        this.streetNameAndNumber = streetNameAndNumber;
     }
 
     public String getPostalCode() {
@@ -131,5 +106,13 @@ public class ProviderLocation {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

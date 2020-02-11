@@ -93,10 +93,10 @@ public class SecurityService {
             throw new ServiceException("Service is null");
         }
 
-        if (service.getProviders().isEmpty()) {
-            throw new ValidationException("Service has no providers");
+        if (service.getMainProvider() == null || service.getMainProvider().equals("")) {
+            throw new ValidationException("Service has no main provider");
         }
-        Optional<List<String>> providers = Optional.of(service.getProviders());
+        Optional<List<String>> providers = Optional.of(Collections.singletonList(service.getMainProvider()));
         return providers
                 .get()
                 .stream()
@@ -105,15 +105,16 @@ public class SecurityService {
     }
 
     public boolean userIsServiceProviderAdmin(Authentication auth, eu.einfracentral.domain.Service service) {
-        if (service.getProviders().isEmpty()) {
-            throw new ValidationException("Service has no providers");
+        if (service.getMainProvider() != null && !service.getMainProvider().equals("")) {
+            Optional<List<String>> providers = Optional.of(Collections.singletonList(service.getMainProvider()));
+            return providers
+                    .get()
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .anyMatch(id -> userIsProviderAdmin(auth, id));
+        } else {
+            throw new ValidationException("Service has no main provider");
         }
-        Optional<List<String>> providers = Optional.of(service.getProviders());
-        return providers
-                .get()
-                .stream()
-                .filter(Objects::nonNull)
-                .anyMatch(id -> userIsProviderAdmin(auth, id));
     }
 
     public boolean userIsServiceProviderAdmin(Authentication auth, String serviceId) {
@@ -123,10 +124,10 @@ public class SecurityService {
         } catch (RuntimeException e) {
             return false;
         }
-        if (service.getService().getProviders().isEmpty()) {
-            throw new ValidationException("Service has no providers");
+        if (service.getService().getMainProvider() == null || service.getService().getMainProvider().equals("")) {
+            throw new ValidationException("Service has no main provider");
         }
-        Optional<List<String>> providers = Optional.of(service.getService().getProviders());
+        Optional<List<String>> providers = Optional.of(Collections.singletonList(service.getService().getMainProvider()));
         return providers
                 .get()
                 .stream()
@@ -135,25 +136,23 @@ public class SecurityService {
     }
 
     public boolean providerCanAddServices(Authentication auth, InfraService service) {
-        List<String> providerIds = service.getService().getProviders();
-        for (String providerId : providerIds) {
-            ProviderBundle provider = providerManager.get(providerId);
-            if (userIsProviderAdmin(auth, provider.getId())) {
-                if (provider.getStatus() == null) {
-                    throw new ServiceException("Provider status field is null");
+        String providerId = service.getService().getMainProvider();
+        ProviderBundle provider = providerManager.get(providerId);
+        if (userIsProviderAdmin(auth, provider.getId())) {
+            if (provider.getStatus() == null) {
+                throw new ServiceException("Provider status field is null");
+            }
+            if (provider.isActive() && provider.getStatus().equals(Provider.States.APPROVED.getKey())) {
+                if (userIsProviderAdmin(auth, provider.getId())) {
+                    return true;
                 }
-                if (provider.isActive() && provider.getStatus().equals(Provider.States.APPROVED.getKey())) {
-                    if (userIsProviderAdmin(auth, provider.getId())) {
-                        return true;
-                    }
-                } else if (provider.getStatus().equals(Provider.States.ST_SUBMISSION.getKey())) {
-                    FacetFilter ff = new FacetFilter();
-                    ff.addFilter("providers", provider.getId());
-                    if (infraServiceService.getAll(ff, getAdminAccess()).getResults().isEmpty()) {
-                        return true;
-                    }
-                    throw new ResourceException("You have already created a Service Template.", HttpStatus.CONFLICT);
+            } else if (provider.getStatus().equals(Provider.States.ST_SUBMISSION.getKey())) {
+                FacetFilter ff = new FacetFilter();
+                ff.addFilter("providers", provider.getId());
+                if (infraServiceService.getAll(ff, getAdminAccess()).getResults().isEmpty()) {
+                    return true;
                 }
+                throw new ResourceException("You have already created a Service Template.", HttpStatus.CONFLICT);
             }
         }
         return false;
@@ -174,14 +173,12 @@ public class SecurityService {
 
     public boolean providerIsActiveAndUserIsAdmin(Authentication auth, String serviceId) {
         InfraService service = infraServiceService.get(serviceId);
-        for (String providerId : service.getService().getProviders()) {
-            ProviderBundle provider = providerManager.get(providerId);
+            ProviderBundle provider = providerManager.get(service.getService().getMainProvider());
             if (provider != null && provider.isActive()) {
-                if (userIsProviderAdmin(auth, providerId)) {
+                if (userIsProviderAdmin(auth, service.getService().getMainProvider())) {
                     return true;
                 }
             }
-        }
         return false;
     }
 

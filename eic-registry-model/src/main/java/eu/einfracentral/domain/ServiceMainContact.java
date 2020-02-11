@@ -10,12 +10,12 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
-public class ProviderMainContact {
+public class ServiceMainContact {
 
 
     // Contact Basic Information
     /**
-     * First Name of the provider's main contact person / provider manager.
+     * First Name of the service/resource's main contact person/manager.
      */
     @XmlElement(required = true)
     @ApiModelProperty(position = 1, example = "String (required)", required = true)
@@ -23,7 +23,7 @@ public class ProviderMainContact {
     private String firstName;
 
     /**
-     * Last Name of the provider's main contact person / provider manager.
+     * Last Name of the service/resource's main contact person/manager.
      */
     @XmlElement(required = true)
     @ApiModelProperty(position = 2, example = "String (required)", required = true)
@@ -31,7 +31,7 @@ public class ProviderMainContact {
     private String lastName;
 
     /**
-     * Email of the provider's main contact person / provider manager.
+     * Email of the service/resource's main contact person/manager.
      */
     @XmlElement(required = true)
     @ApiModelProperty(position = 3, example = "String (required)", required = true)
@@ -39,7 +39,7 @@ public class ProviderMainContact {
     private String email;
 
     /**
-     * Phone of the provider's main contact person / provider manager.
+     * Telephone of the service/resource's main contact person/manager.
      */
     @XmlElement
     @ApiModelProperty(position = 4, example = "String (optional)")
@@ -47,32 +47,42 @@ public class ProviderMainContact {
     private String phone;
 
     /**
-     * Position of the provider's main contact person / provider manager.
+     * Position of the service/resource's main contact person/manager.
      */
     @XmlElement
     @ApiModelProperty(position = 5, example = "String (optional)")
     @FieldValidation(nullable = true)
     private String position;
 
-    public ProviderMainContact() {
+    /**
+     * The organisation to which the contact is affiliated
+     */
+    @XmlElement(required = true)
+    @ApiModelProperty(position = 6, example = "String (required)", required = true)
+    @FieldValidation(containsId = true, idClass = Provider.class)
+    private String organisation;
+
+    public ServiceMainContact() {
     }
 
-    public ProviderMainContact(String firstName, String lastName, String email, String phone, String position) {
+    public ServiceMainContact(String firstName, String lastName, String email, String phone, String position, String organisation) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
         this.position = position;
+        this.organisation = organisation;
     }
 
     @Override
     public String toString() {
-        return "Contact{" +
+        return "ServiceMainContact{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", position='" + position + '\'' +
+                ", organisation='" + organisation + '\'' +
                 '}';
     }
 
@@ -114,5 +124,13 @@ public class ProviderMainContact {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getOrganisation() {
+        return organisation;
+    }
+
+    public void setOrganisation(String organisation) {
+        this.organisation = organisation;
     }
 }

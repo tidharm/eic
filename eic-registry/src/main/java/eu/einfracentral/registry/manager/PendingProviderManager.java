@@ -138,15 +138,12 @@ public class PendingProviderManager extends ResourceManager<ProviderBundle> impl
     }
 
     private InfraService updateProviderId(InfraService service, String oldId, String newId) {
-        List<String> providerIds = service.getService().getProviders();
-        providerIds = providerIds.stream().map(id -> {
-            if (id.equals(oldId)) {
-                return newId;
-            } else {
-                return id;
-            }
-        }).collect(Collectors.toList());
-        service.getService().setProviders(providerIds);
+        String providerId = service.getService().getMainProvider();
+        if (providerId.equals(oldId)) {
+            service.getService().setMainProvider(newId);
+        } else {
+            service.getService().setMainProvider(providerId);
+        }
         return service;
     }
 }

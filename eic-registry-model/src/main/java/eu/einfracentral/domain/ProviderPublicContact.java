@@ -10,28 +10,28 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
-public class ProviderMainContact {
+public class ProviderPublicContact {
 
 
     // Contact Basic Information
     /**
-     * First Name of the provider's main contact person / provider manager.
+     * First Name of the provider's contact person to be displayed at the portal.
      */
-    @XmlElement(required = true)
-    @ApiModelProperty(position = 1, example = "String (required)", required = true)
-    @FieldValidation
+    @XmlElement
+    @ApiModelProperty(position = 1, example = "String (optional)")
+    @FieldValidation(nullable = true)
     private String firstName;
 
     /**
-     * Last Name of the provider's main contact person / provider manager.
+     * Last Name of the provider's contact person to be displayed at the portal.
      */
     @XmlElement(required = true)
-    @ApiModelProperty(position = 2, example = "String (required)", required = true)
-    @FieldValidation
+    @ApiModelProperty(position = 2, example = "String (optional)")
+    @FieldValidation(nullable = true)
     private String lastName;
 
     /**
-     * Email of the provider's main contact person / provider manager.
+     * Email of the provider's contact person to be displayed at the portal or general email to contact organisation.
      */
     @XmlElement(required = true)
     @ApiModelProperty(position = 3, example = "String (required)", required = true)
@@ -39,7 +39,7 @@ public class ProviderMainContact {
     private String email;
 
     /**
-     * Phone of the provider's main contact person / provider manager.
+     * Phone of the provider's contact person to be displayed at the portal or general email to contact organisation.
      */
     @XmlElement
     @ApiModelProperty(position = 4, example = "String (optional)")
@@ -47,17 +47,17 @@ public class ProviderMainContact {
     private String phone;
 
     /**
-     * Position of the provider's main contact person / provider manager.
+     * Position of the provider's contact person to be displayed at the portal.
      */
     @XmlElement
     @ApiModelProperty(position = 5, example = "String (optional)")
     @FieldValidation(nullable = true)
     private String position;
 
-    public ProviderMainContact() {
+    public ProviderPublicContact() {
     }
 
-    public ProviderMainContact(String firstName, String lastName, String email, String phone, String position) {
+    public ProviderPublicContact(String firstName, String lastName, String email, String phone, String position) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

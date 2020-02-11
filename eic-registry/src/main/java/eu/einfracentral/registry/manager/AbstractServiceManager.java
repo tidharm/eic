@@ -467,7 +467,9 @@ public abstract class AbstractServiceManager extends AbstractGenericService<Infr
     private List<RichService> createProviderInfo(List<RichService> richServices, Authentication auth) {
         for (RichService richService : richServices) {
             List<ProviderInfo> providerInfoList = new ArrayList<>();
-            for (String provider : richService.getService().getProviders()) {
+            List<String> allProviders = richService.getService().getCollaboratingProviders();
+            allProviders.add(richService.getService().getMainProvider());
+            for (String provider : allProviders) {
                 ProviderInfo providerInfo = new ProviderInfo();
                 providerInfo.setProviderId(providerService.get(provider, auth).getId());
                 providerInfo.setProviderName(providerService.get(provider, auth).getProvider().getName());
@@ -489,7 +491,6 @@ public abstract class AbstractServiceManager extends AbstractGenericService<Infr
     private InfraService prettifyServiceTextFields(InfraService infraService, String specialCharacters) {
         infraService.getService().setTagline(TextUtils.prettifyText(infraService.getService().getTagline(), specialCharacters));
         infraService.getService().setDescription(TextUtils.prettifyText(infraService.getService().getDescription(), specialCharacters));
-        infraService.getService().setUserValue(TextUtils.prettifyText(infraService.getService().getUserValue(), specialCharacters));
         infraService.getService().setChangeLog(TextUtils.prettifyText(infraService.getService().getChangeLog(), specialCharacters));
         return infraService;
     }
@@ -523,8 +524,8 @@ public abstract class AbstractServiceManager extends AbstractGenericService<Infr
             }
 
             // Place Names
-            if (infraService.getService().getPlaces() != null) {
-                richService.setPlaceNames(infraService.getService().getPlaces()
+            if (infraService.getService().getGeographicalAvailability() != null) {
+                richService.setPlaceNames(infraService.getService().getGeographicalAvailability()
                         .stream()
                         .filter(v -> !v.equals(""))
                         .map(p -> allVocabularies.get(p).getName())
@@ -583,9 +584,9 @@ public abstract class AbstractServiceManager extends AbstractGenericService<Infr
             }
 
             // OrderType Name
-            if (infraService.getService().getOrderType() != null && !infraService.getService().getOrderType().equals("")) {
-                richService.setOrderTypeName(allVocabularies.get(infraService.getService().getOrderType()).getName());
-            }
+//            if (infraService.getService().getOrderType() != null && !infraService.getService().getOrderType().equals("")) {
+//                richService.setOrderTypeName(allVocabularies.get(infraService.getService().getOrderType()).getName());
+//            }
 
             // Domain Tree
             List<ScientificDomain> domains = new ArrayList<>();

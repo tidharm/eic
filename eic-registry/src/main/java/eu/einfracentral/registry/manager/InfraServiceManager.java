@@ -17,9 +17,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static eu.einfracentral.config.CacheConfig.CACHE_FEATURED;
 
@@ -57,7 +55,7 @@ public class InfraServiceManager extends AbstractServiceManager implements Infra
             infraService.getService().setId(id);
         }
         validate(infraService);
-        infraService.setActive(providerManager.get(infraService.getService().getProviders().get(0)).isActive());
+        infraService.setActive(providerManager.get(infraService.getService().getMainProvider()).isActive());
 
         infraService.setLatest(true);
 
@@ -69,7 +67,8 @@ public class InfraServiceManager extends AbstractServiceManager implements Infra
         InfraService ret;
         ret = super.add(infraService, auth);
 
-        providerManager.verifyNewProviders(infraService.getService().getProviders(), auth);
+        providerManager.verifyNewProviders(Collections.singletonList(infraService.getService().getMainProvider()), auth);
+        providerManager.verifyNewProviders(infraService.getService().getCollaboratingProviders(), auth);
 
         return ret;
     }
@@ -205,44 +204,44 @@ public class InfraServiceManager extends AbstractServiceManager implements Infra
             logger.error("", e);
         }
 
-        validateExtraFields(service);
+//        validateExtraFields(service);
 
         return true;
     }
 
     // Validate the correctness of Service Aggregator Information
-    private void validateExtraFields(Service service) {
-        if (service.getAggregatedServices() == null) {
-            service.setAggregatedServices(1);
-        } else if (service.getAggregatedServices() < 1) {
-            throw new ValidationException("Aggregated services cannot be less than 1");
-        }
-        if (service.getPublications() == null) {
-            service.setPublications(0);
-        } else if (service.getPublications() < 0) {
-            throw new ValidationException("Publications number cannot be negative");
-        }
-        if (service.getDatasets() == null) {
-            service.setDatasets(0);
-        } else if (service.getDatasets() < 0) {
-            throw new ValidationException("Data(sets) number cannot be negative");
-        }
-        if (service.getSoftware() == null) {
-            service.setSoftware(0);
-        } else if (service.getSoftware() < 0) {
-            throw new ValidationException("Software number cannot be negative");
-        }
-        if (service.getApplications() == null) {
-            service.setApplications(0);
-        } else if (service.getApplications() < 0) {
-            throw new ValidationException("Applications number cannot be negative");
-        }
-        if (service.getOtherProducts() == null) {
-            service.setOtherProducts(0);
-        } else if (service.getOtherProducts() < 0) {
-            throw new ValidationException("Other products number cannot be negative");
-        }
-    }
+//    private void validateExtraFields(Service service) {
+//        if (service.getAggregatedServices() == null) {
+//            service.setAggregatedServices(1);
+//        } else if (service.getAggregatedServices() < 1) {
+//            throw new ValidationException("Aggregated services cannot be less than 1");
+//        }
+//        if (service.getPublications() == null) {
+//            service.setPublications(0);
+//        } else if (service.getPublications() < 0) {
+//            throw new ValidationException("Publications number cannot be negative");
+//        }
+//        if (service.getDatasets() == null) {
+//            service.setDatasets(0);
+//        } else if (service.getDatasets() < 0) {
+//            throw new ValidationException("Data(sets) number cannot be negative");
+//        }
+//        if (service.getSoftware() == null) {
+//            service.setSoftware(0);
+//        } else if (service.getSoftware() < 0) {
+//            throw new ValidationException("Software number cannot be negative");
+//        }
+//        if (service.getApplications() == null) {
+//            service.setApplications(0);
+//        } else if (service.getApplications() < 0) {
+//            throw new ValidationException("Applications number cannot be negative");
+//        }
+//        if (service.getOtherProducts() == null) {
+//            service.setOtherProducts(0);
+//        } else if (service.getOtherProducts() < 0) {
+//            throw new ValidationException("Other products number cannot be negative");
+//        }
+//    }
 
     //logic for migrating our data to release schema; can be a no-op when outside of migratory period
 //    private InfraService migrate(InfraService service) throws MalformedURLException {

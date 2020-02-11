@@ -47,7 +47,8 @@ public class PendingServiceManager extends ResourceManager<InfraService> impleme
 
         super.add(service, auth);
 
-        List<String> serviceProviders = service.getService().getProviders();
+        List<String> serviceProviders = service.getService().getCollaboratingProviders();
+        serviceProviders.add(service.getService().getMainProvider());
         for (String providerId : serviceProviders) {
             ProviderBundle bundle = pendingProviderManager.get(providerId);
             if (bundle.getStatus().equals(Provider.States.PENDING_1.getKey())) {

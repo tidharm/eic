@@ -186,15 +186,13 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
     @CacheEvict(value = CACHE_PROVIDERS, allEntries = true)
     public void delete(ProviderBundle provider) {
         List<InfraService> services = this.getInfraServices(provider.getId());
-        services.forEach(s -> {
-            try {
-                if (s.getService().getProviders().size() == 1) {
-                    infraServiceService.delete(s);
-                }
-            } catch (ResourceNotFoundException e) {
-                logger.error("Error deleting Service", e);
+        try {
+            for (InfraService service : services){
+                infraServiceService.delete(service);
             }
-        });
+        } catch (ResourceNotFoundException e) {
+            logger.error("Error deleting Service", e);
+        }
         super.delete(provider);
         logger.debug("Deleting Provider: {}", provider);
 

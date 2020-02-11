@@ -14,29 +14,36 @@ import java.util.List;
 @XmlRootElement(namespace = "http://einfracentral.eu")
 public class ServiceOption {
 
-    // Option Basic Information
+    // ServiceOption Basic Information
+//    /**
+//     * Identifier of the service/resource option.
+//     */
+//    @XmlElement(required = true)
+//    @ApiModelProperty(position = 1, example = "String (required)", required = true)
+//    @FieldValidation
+//    private String id;
 
     /**
-     * Name of the service option.
+     * Name of the service/resource option.
      */
     @XmlElement(required = true)
-    @ApiModelProperty(position = 1, example = "String (required)", required = true)
+    @ApiModelProperty(position = 2, example = "String (required)", required = true)
     @FieldValidation
     private String name;
 
     /**
-     * Webpage with information about the service option.
+     * Webpage with information about the service/resource option.
      */
     @XmlElement(required = true)
-    @ApiModelProperty(position = 2, example = "URL (required)", required = true)
+    @ApiModelProperty(position = 3, example = "URL (required)", required = true)
     @FieldValidation
-    private URL url;
+    private URL webpage;
 
     /**
-     * The description of the service option.
+     * The description of the service/resource option.
      */
     @XmlElement(required = true)
-    @ApiModelProperty(position = 3, example = "String (required)", required = true)
+    @ApiModelProperty(position = 4, example = "String (required)", required = true)
     @FieldValidation
     private String description;
 
@@ -44,29 +51,29 @@ public class ServiceOption {
      * Link to the logo/visual identity of the service provider.
      */
     @XmlElement
-    @ApiModelProperty(position = 4, example = "URL (optional)")
+    @ApiModelProperty(position = 5, example = "URL (optional)")
     @FieldValidation(nullable = true)
     private URL logo;
 
 
-    // Option Contact Information
+    // ServiceOption Contact Information
     /**
      * List of option's contact persons info.
      */
     @XmlElementWrapper(name = "contacts", required = true)
     @XmlElement(name = "contact")
-    @ApiModelProperty(position = 5, required = true)
+    @ApiModelProperty(position = 6, required = true)
     @FieldValidation
-    private List<Contact> contacts;
+    private List<ServiceOptionContact> contacts;
 
 
-    // Option Other Information
+    // ServiceOption Other Information
     /**
      * List of option's attributes.
      */
     @XmlElementWrapper(name = "attributes")
     @XmlElement(name = "attribute")
-    @ApiModelProperty(position = 6, dataType = "List", example = "String[] (optional)")
+    @ApiModelProperty(position = 7, dataType = "List", example = "String[] (optional)")
     @FieldValidation(nullable = true)
     private List<String> attributes;
 
@@ -77,14 +84,23 @@ public class ServiceOption {
     @Override
     public String toString() {
         return "ServiceOption{" +
+//                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", url=" + url +
+                ", webpage=" + webpage +
                 ", description='" + description + '\'' +
                 ", logo=" + logo +
                 ", contacts=" + contacts +
                 ", attributes=" + attributes +
                 '}';
     }
+
+//    public String getId() {
+//        return id;
+//    }
+//
+//    public void setId(String id) {
+//        this.id = id;
+//    }
 
     public String getName() {
         return name;
@@ -94,12 +110,12 @@ public class ServiceOption {
         this.name = name;
     }
 
-    public URL getUrl() {
-        return url;
+    public URL getWebpage() {
+        return webpage;
     }
 
-    public void setUrl(URL url) {
-        this.url = url;
+    public void setWebpage(URL webpage) {
+        this.webpage = webpage;
     }
 
     public String getDescription() {
@@ -118,11 +134,11 @@ public class ServiceOption {
         this.logo = logo;
     }
 
-    public List<Contact> getContacts() {
+    public List<ServiceOptionContact> getContacts() {
         return contacts;
     }
 
-    public void setContacts(List<Contact> contacts) {
+    public void setContacts(List<ServiceOptionContact> contacts) {
         this.contacts = contacts;
     }
 

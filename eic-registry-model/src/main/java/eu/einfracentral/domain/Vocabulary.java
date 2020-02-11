@@ -57,13 +57,13 @@ public class Vocabulary implements Identifiable {
         ACCESS_MODE("Access mode"),
         ORDER_TYPE("Order type"),
         PROVIDER_AREA_OF_ACTIVITY("Provider area of activity"),
-        PROVIDER_CATEGORY("Provider category"),
-        PROVIDER_DOMAIN("Provider domain"),
-        PROVIDER_ESFRI("Provider esfri"),
+        PROVIDER_SCIENTIFIC_DOMAIN("Provider scientific domain"),
+        PROVIDER_SCIENTIFIC_SUBDOMAIN("Provider scientific subdomain"),
+        PROVIDER_ESFRI_PARTICIPATION("Provider esfri participation"),
         PROVIDER_ESFRI_DOMAIN("Provider esfri domain"),
         PROVIDER_LEGAL_STATUS("Provider legal status"),
         PROVIDER_LIFE_CYCLE_STATUS("Provider life cycle status"),
-        PROVIDER_NETWORKS("Provider networks"),
+        PROVIDER_AFFILIATIONS("Provider affiliations"),
         PROVIDER_SOCIETAL_GRAND_CHALLENGES("Provider societal grand challenges"),
         PROVIDER_TYPE("Provider type");
 
