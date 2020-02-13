@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("pendingServiceManager")
@@ -48,6 +49,9 @@ public class PendingServiceManager extends ResourceManager<InfraService> impleme
         super.add(service, auth);
 
         List<String> serviceProviders = service.getService().getCollaboratingProviders();
+        if (serviceProviders == null){
+            serviceProviders = new ArrayList<>();
+        }
         serviceProviders.add(service.getService().getMainProvider());
         for (String providerId : serviceProviders) {
             ProviderBundle bundle = pendingProviderManager.get(providerId);
