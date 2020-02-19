@@ -74,8 +74,10 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
         validate(provider);
 
         provider.setMetadata(Metadata.createMetadata(new User(auth).getFullName()));
-        provider.setActive(false);
-        provider.setStatus(Provider.States.PENDING_1.getKey());
+//        provider.setActive(false);
+//        provider.setStatus(Provider.States.PENDING_1.getKey());
+        provider.setStatus(Bundle.StatusType.DEACTIVATED.getKey());
+        provider.setProviderState(Provider.State.PENDING_1.getKey());
 
         ProviderBundle ret;
         ret = super.add(provider, null);
@@ -101,8 +103,10 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
         provider.setMetadata(Metadata.updateMetadata(provider.getMetadata(), new User(auth).getFullName()));
         Resource existing = whereID(provider.getId(), true);
         ProviderBundle ex = deserialize(existing);
-        provider.setActive(ex.isActive());
+//        provider.setActive(ex.isActive());
+//        provider.setStatus(ex.getStatus());
         provider.setStatus(ex.getStatus());
+        provider.setProviderState(ex.getProviderState());
         existing.setPayload(serialize(provider));
         existing.setResourceType(resourceType);
         resourceService.updateResource(existing);
@@ -212,29 +216,30 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
 
     @Override
     @CacheEvict(value = CACHE_PROVIDERS, allEntries = true)
-    public ProviderBundle verifyProvider(String id, Provider.States status, Boolean active, Authentication auth) {
+    public ProviderBundle verifyProvider(String id, Provider.State state, Boolean active, Authentication auth) {
         ProviderBundle provider = get(id);
-        provider.setStatus(status.getKey());
-        switch (status) {
+        provider.setProviderState(state.getKey());
+        switch (state) {
             case APPROVED:
                 if (active == null) {
                     active = true;
                 }
-                provider.setActive(active);
+                provider.setStatus(Bundle.StatusType.PUBLISHED.getKey());
                 break;
 
             default:
-                provider.setActive(false);
+                provider.setStatus(Bundle.StatusType.DEACTIVATED.getKey());
         }
 
         // send registration emails
         registrationMailService.sendProviderMails(provider);
 
         if (active != null) {
-            provider.setActive(active);
             if (!active) {
+                provider.setStatus(Bundle.StatusType.DEACTIVATED.getKey());
                 deactivateServices(provider.getId());
             } else {
+                provider.setStatus(Bundle.StatusType.PUBLISHED.getKey());
                 activateServices(provider.getId());
             }
         }
@@ -355,7 +360,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
         for (InfraService service : services) {
 //            service.setActive(service.getStatus() == null || service.getStatus().equals("true"));
 //            service.setStatus(null);
-            service.setActive(true);
+            service.setStatus(Bundle.StatusType.PUBLISHED.getKey());
             try {
                 infraServiceService.update(service, null);
                 logger.info("Setting Service with name '{}' as active", service.getService().getName());
@@ -370,7 +375,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
         for (InfraService service : services) {
 //            service.setStatus(service.isActive() != null ? service.isActive().toString() : "true");
 //            service.setStatus(null);
-            service.setActive(false);
+            service.setStatus(Bundle.StatusType.DEACTIVATED.getKey());
             try {
                 infraServiceService.update(service, null);
                 logger.info("Setting Service with name '{}' as inactive", service.getService().getName());
@@ -391,8 +396,8 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
     public void verifyNewProviders(List<String> providers, Authentication authentication) {
         for (String serviceProvider : providers) {
             ProviderBundle provider = get(serviceProvider);
-            if (provider.getStatus().equals(Provider.States.ST_SUBMISSION.getKey())) {
-                verifyProvider(provider.getId(), Provider.States.PENDING_2, false, authentication);
+            if (provider.getProviderState().equals(Provider.State.ST_SUBMISSION.getKey())) {
+                verifyProvider(provider.getId(), Provider.State.PENDING_2, false, authentication);
             }
         }
     }

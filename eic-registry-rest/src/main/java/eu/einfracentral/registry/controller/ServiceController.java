@@ -266,9 +266,11 @@ public class ServiceController {
         for (Map.Entry<String, List<InfraService>> services : results.entrySet()) {
             List<Service> items = services.getValue()
                     .stream()
-                    .filter(InfraService::isActive)
-                    .filter(InfraService::isLatest)
-                    .map(InfraService::getService).collect(Collectors.toList());
+//                    .filter(InfraService::isActive)
+//                    .filter(InfraService::isLatest)
+                    .filter(s -> s.getStatus().equals(Bundle.StatusType.PUBLISHED.getKey()))
+                    .map(InfraService::getService)
+                    .collect(Collectors.toList());
             if (!items.isEmpty()) {
                 serviceResults.put(services.getKey(), items);
             }
@@ -344,7 +346,11 @@ public class ServiceController {
         } else {
             service = infraService.get(id, version);
         }
-        service.setActive(active);
+        if (active){
+            service.setStatus(Bundle.StatusType.PUBLISHED.getKey());
+        } else {
+            service.setStatus(Bundle.StatusType.DEACTIVATED.getKey());
+        }
         logger.info("User '{}' has set Service with name '{}' and id '{}' as active", auth.getName(), service.getService().getName(), service.getService().getId());
         return ResponseEntity.ok(infraService.update(service, auth));
     }
@@ -356,7 +362,7 @@ public class ServiceController {
         List<ProviderBundle> pendingProviders = providerService.getInactive();
         List<Service> serviceTemplates = new ArrayList<>();
         for (ProviderBundle provider : pendingProviders) {
-            if (Provider.States.fromString(provider.getStatus()) == Provider.States.PENDING_2) {
+            if (Provider.State.fromString(provider.getProviderState()) == Provider.State.PENDING_2) {
                 serviceTemplates.addAll(providerService.getInactiveServices(provider.getId()).stream().map(InfraService::getService).collect(Collectors.toList()));
             }
         }

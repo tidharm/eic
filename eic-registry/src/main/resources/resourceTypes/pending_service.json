@@ -166,22 +166,9 @@
     },
     {
       "multivalued": false,
-      "name": "active",
-      "defaultValue": false,
-      "path": "//*[local-name()='infraService']/*[local-name()='active']/text()",
-      "type": "java.lang.Boolean"
-    },
-    {
-      "multivalued": false,
       "name": "status",
       "path": "//*[local-name()='infraService']/*[local-name()='status']/text()",
       "type": "java.lang.String"
-    },
-    {
-      "multivalued": false,
-      "name": "latest",
-      "path": "//*[local-name()='infraService']/*[local-name()='latest']/text()",
-      "type": "java.lang.Boolean"
     },
     {
       "multivalued": false,

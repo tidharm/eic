@@ -8,10 +8,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(namespace = "http://einfracentral.eu")
 public class InfraService extends Bundle<Service> {
 
-    @XmlElement
-    private boolean latest;
-
-
     public InfraService() {
         // No arg constructor
     }
@@ -31,9 +27,6 @@ public class InfraService extends Bundle<Service> {
         return "InfraService{" +
                 "service=" + getService() +
                 ", metadata=" + getMetadata() +
-                ", active=" + isActive() +
-                ", status='" + getStatus() + '\'' +
-                ", latest=" + latest +
                 '}';
     }
 
@@ -46,11 +39,4 @@ public class InfraService extends Bundle<Service> {
         this.setPayload(service);
     }
 
-    public boolean isLatest() {
-        return latest;
-    }
-
-    public void setLatest(boolean latest) {
-        this.latest = latest;
-    }
 }

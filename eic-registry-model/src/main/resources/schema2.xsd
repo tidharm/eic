@@ -5,6 +5,15 @@
     <xs:sequence/>
   </xs:complexType>
 
+  <xs:simpleType name="statusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PUBLISHED"/>
+      <xs:enumeration value="DEACTIVATED"/>
+      <xs:enumeration value="DEPRECATED"/>
+      <xs:enumeration value="DELETED"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="userActionType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="FAVOURITE"/>
@@ -27,7 +36,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="states">
+  <xs:simpleType name="state">
     <xs:restriction base="xs:string">
       <xs:enumeration value="PENDING_1"/>
       <xs:enumeration value="ST_SUBMISSION"/>

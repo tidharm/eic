@@ -1,5 +1,6 @@
 package eu.einfracentral.registry.controller;
 
+import eu.einfracentral.domain.Bundle;
 import eu.einfracentral.domain.InfraService;
 import eu.einfracentral.domain.Metadata;
 import eu.einfracentral.registry.service.InfraServiceService;
@@ -135,8 +136,9 @@ public class InfraServiceController {
                                                   @RequestParam boolean active, @RequestParam Boolean latest,
                                                   @ApiIgnore Authentication auth) throws ResourceNotFoundException {
         InfraService service = infraService.get(id, version);
-        service.setActive(active);
-        service.setLatest(latest);
+//        service.setActive(active);
+//        service.setLatest(latest);
+        service.setStatus(Bundle.StatusType.PUBLISHED.getKey());
         Metadata metadata = service.getMetadata();
         metadata.setModifiedBy("system");
         metadata.setModifiedAt(String.valueOf(System.currentTimeMillis()));

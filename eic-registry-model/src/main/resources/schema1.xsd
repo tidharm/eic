@@ -41,7 +41,6 @@
 
   <xs:complexType abstract="true" name="bundle">
     <xs:sequence>
-      <xs:element name="active" type="xs:boolean"/>
       <xs:element minOccurs="0" ref="tns:metadata"/>
       <xs:element minOccurs="0" name="status" type="xs:string"/>
     </xs:sequence>
@@ -162,7 +161,6 @@
     <xs:complexContent>
       <xs:extension base="tns:bundle">
         <xs:sequence>
-          <xs:element name="latest" type="xs:boolean"/>
           <xs:element minOccurs="0" ref="tns:service"/>
         </xs:sequence>
       </xs:extension>
@@ -836,6 +834,7 @@
       <xs:extension base="tns:bundle">
         <xs:sequence>
           <xs:element minOccurs="0" ref="tns:provider"/>
+          <xs:element minOccurs="0" name="providerState" type="xs:string"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

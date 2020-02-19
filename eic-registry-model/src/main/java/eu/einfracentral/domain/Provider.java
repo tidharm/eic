@@ -229,16 +229,6 @@ public class Provider implements Identifiable {
     @FieldValidation(nullable = true)
     private String nationalRoadmap;
 
-
-    // Extra needed fields
-//    @XmlElement
-//    @ApiModelProperty(hidden = true)
-//    private Boolean active;
-//
-//    @XmlElement
-//    @ApiModelProperty(hidden = true)
-//    private String status;
-
     @XmlElementWrapper(name = "users", required = true)
     @XmlElement(name = "user")
     @ApiModelProperty(position = 24, required = true)
@@ -249,7 +239,7 @@ public class Provider implements Identifiable {
     public Provider() {
     }
 
-    public enum States {
+    public enum State {
         PENDING_1("pending initial approval"),
         ST_SUBMISSION("pending service template submission"),
         PENDING_2("pending service template approval"),
@@ -257,23 +247,23 @@ public class Provider implements Identifiable {
         APPROVED("approved"),
         REJECTED("rejected");
 
-        private final String type;
+        private final String state;
 
-        States(final String type) {
-            this.type = type;
+        State(final String state) {
+            this.state = state;
         }
 
         public String getKey() {
-            return type;
+            return state;
         }
 
         /**
          * @return the Enum representation for the given string.
          * @throws IllegalArgumentException if unknown string.
          */
-        public static States fromString(String s) throws IllegalArgumentException {
-            return Arrays.stream(States.values())
-                    .filter(v -> v.type.equals(s))
+        public static State fromString(String s) throws IllegalArgumentException {
+            return Arrays.stream(State.values())
+                    .filter(v -> v.state.equals(s))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("unknown value: " + s));
         }
@@ -494,22 +484,6 @@ public class Provider implements Identifiable {
     public void setNationalRoadmap(String nationalRoadmap) {
         this.nationalRoadmap = nationalRoadmap;
     }
-
-//    public Boolean getActive() {
-//        return active;
-//    }
-//
-//    public void setActive(Boolean active) {
-//        this.active = active;
-//    }
-//
-//    public String getStatus() {
-//        return status;
-//    }
-//
-//    public void setStatus(String status) {
-//        this.status = status;
-//    }
 
     public List<User> getUsers() {
         return users;

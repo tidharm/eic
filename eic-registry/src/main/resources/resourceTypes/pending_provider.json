@@ -117,13 +117,6 @@
     },
     {
       "multivalued": false,
-      "name": "active",
-      "path": "//*[local-name()='active']/text()",
-      "defaultValue": false,
-      "type": "java.lang.Boolean"
-    },
-    {
-      "multivalued": false,
       "name": "status",
       "path": "//*[local-name()='status']/text()",
       "type": "java.lang.String"

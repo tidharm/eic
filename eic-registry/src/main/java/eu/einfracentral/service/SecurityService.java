@@ -1,8 +1,6 @@
 package eu.einfracentral.service;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.einfracentral.domain.*;
@@ -23,9 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service("securityService")
 public class SecurityService {
@@ -139,14 +135,14 @@ public class SecurityService {
         for (String providerId : providerIds) {
             ProviderBundle provider = providerManager.get(providerId);
             if (userIsProviderAdmin(auth, provider.getId())) {
-                if (provider.getStatus() == null) {
+                if (provider.getProviderState() == null) {
                     throw new ServiceException("Provider status field is null");
                 }
-                if (provider.isActive() && provider.getStatus().equals(Provider.States.APPROVED.getKey())) {
+                if (provider.getStatus().equals(Bundle.StatusType.PUBLISHED.getKey()) && provider.getProviderState().equals(Provider.State.APPROVED.getKey())) {
                     if (userIsProviderAdmin(auth, provider.getId())) {
                         return true;
                     }
-                } else if (provider.getStatus().equals(Provider.States.ST_SUBMISSION.getKey())) {
+                } else if (provider.getProviderState().equals(Provider.State.ST_SUBMISSION.getKey())) {
                     FacetFilter ff = new FacetFilter();
                     ff.addFilter("providers", provider.getId());
                     if (infraServiceService.getAll(ff, getAdminAccess()).getResults().isEmpty()) {
@@ -163,7 +159,7 @@ public class SecurityService {
     public boolean providerIsActive(String providerId) {
         ProviderBundle provider = providerManager.get(providerId);
         if (provider != null) {
-            if (!provider.isActive()) {
+            if (!provider.getStatus().equals(Bundle.StatusType.PUBLISHED.getKey())) {
                 throw new ServiceException(String.format("Provider '%s' is not active.", provider.getProvider().getName()));
             }
             return true;
@@ -176,7 +172,7 @@ public class SecurityService {
         InfraService service = infraServiceService.get(serviceId);
         for (String providerId : service.getService().getProviders()) {
             ProviderBundle provider = providerManager.get(providerId);
-            if (provider != null && provider.isActive()) {
+            if (provider != null && provider.getStatus().equals(Bundle.StatusType.PUBLISHED.getKey())) {
                 if (userIsProviderAdmin(auth, providerId)) {
                     return true;
                 }
@@ -187,7 +183,7 @@ public class SecurityService {
 
     public boolean serviceIsActive(String serviceId) {
         InfraService service = infraServiceService.get(serviceId);
-        return service.isActive();
+        return service.getStatus().equals(Bundle.StatusType.PUBLISHED.getKey());
     }
 
     public boolean serviceIsActive(String serviceId, String version) {
@@ -197,6 +193,6 @@ public class SecurityService {
             return serviceIsActive(version);
         }
         InfraService service = infraServiceService.get(serviceId, version);
-        return service.isActive();
+        return service.getStatus().equals(Bundle.StatusType.PUBLISHED.getKey());
     }
 }

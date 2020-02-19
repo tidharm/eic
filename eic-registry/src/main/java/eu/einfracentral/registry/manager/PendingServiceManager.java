@@ -46,16 +46,17 @@ public class PendingServiceManager extends ResourceManager<InfraService> impleme
         if (service.getMetadata() == null) {
             service.setMetadata(Metadata.createMetadata(new User(auth).getFullName()));
         }
-        service.setActive(true);
-        service.setLatest(true);
+//        service.setActive(true);
+//        service.setLatest(true);
+        service.setStatus(Bundle.StatusType.PUBLISHED.getKey());
 
         super.add(service, auth);
 
         List<String> serviceProviders = service.getService().getProviders();
         for (String providerId : serviceProviders) {
             ProviderBundle bundle = pendingProviderManager.get(providerId);
-            if (bundle.getStatus().equals(Provider.States.PENDING_1.getKey())) {
-                bundle.setStatus(Provider.States.ST_SUBMISSION.getKey());
+            if (bundle.getProviderState().equals(Provider.State.PENDING_1.getKey())) {
+                bundle.setProviderState(Provider.State.ST_SUBMISSION.getKey());
                 pendingProviderManager.update(bundle, auth);
             }
         }

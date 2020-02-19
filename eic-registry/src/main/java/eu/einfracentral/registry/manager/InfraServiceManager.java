@@ -60,9 +60,10 @@ public class InfraServiceManager extends AbstractServiceManager implements Infra
             infraService.getService().setId(id);
         }
         validate(infraService);
-        infraService.setActive(providerManager.get(infraService.getService().getProviders().get(0)).isActive());
 
-        infraService.setLatest(true);
+//        infraService.setActive(providerManager.get(infraService.getService().getProviders().get(0)).isActive());
+//        infraService.setLatest(true);
+        infraService.setStatus(providerManager.get(infraService.getService().getProviders().get(0)).getStatus());
 
         if (infraService.getMetadata() == null) {
             infraService.setMetadata(Metadata.createMetadata(new User(auth).getFullName()));
@@ -100,12 +101,13 @@ public class InfraServiceManager extends AbstractServiceManager implements Infra
         // update existing service serviceMetadata
         infraService.setMetadata(
                 Metadata.updateMetadata(existingService.getMetadata(), new User(auth).getFullName()));
-        infraService.setActive(existingService.isActive());
+        infraService.setStatus(existingService.getStatus());
 
         if ((infraService.getService().getVersion() == null && existingService.getService().getVersion() == null)
                 || infraService.getService().getVersion() != null
                 && infraService.getService().getVersion().equals(existingService.getService().getVersion())) {
-            infraService.setLatest(existingService.isLatest());
+//            infraService.setLatest(existingService.isLatest());
+//            infraService.setStatus(existingService.getStatus());
             infraService.setStatus(existingService.getStatus());
             ret = super.update(infraService, auth);
             logger.info("Updating Service without version change: {}", infraService);
@@ -116,13 +118,13 @@ public class InfraServiceManager extends AbstractServiceManager implements Infra
 //                infraService.setStatus(); // TODO: enable this when services support the Status field
 
             // set previous service not latest
-            existingService.setLatest(false);
+            existingService.setStatus(Bundle.StatusType.DEPRECATED.getKey());
             super.update(existingService, auth);
             logger.info("Updating Service with version change (super.update): {}", existingService);
             logger.info("Service Version: {}", existingService.getService().getVersion());
 
             // set new service as latest
-            infraService.setLatest(true);
+            infraService.setStatus(Bundle.StatusType.PUBLISHED.getKey());
             ret = super.add(infraService, auth);
             logger.info("Updating Service with version change (super.add): {}", infraService);
         }

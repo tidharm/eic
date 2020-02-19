@@ -50,8 +50,8 @@ public class PendingProviderManager extends ResourceManager<ProviderBundle> impl
         providerBundle.setId(idCreator.createProviderId(providerBundle.getProvider()));
         providerBundle.setMetadata(Metadata.updateMetadata(providerBundle.getMetadata(), new User(auth).getFullName()));
 
-        if (providerBundle.getStatus() == null) {
-            providerBundle.setStatus(Provider.States.PENDING_1.getKey());
+        if (providerBundle.getProviderState() == null) {
+            providerBundle.setProviderState(Provider.State.PENDING_1.getKey());
         }
 
         super.add(providerBundle, auth);

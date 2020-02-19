@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
@@ -22,10 +24,39 @@ public abstract class Bundle<T extends Identifiable> implements Identifiable {
     private Metadata metadata;
 
     @XmlElement
-    private boolean active;
-
-    @XmlElement
     private String status;
+
+    public enum StatusType {
+        PUBLISHED("published"),
+        DEACTIVATED("deactivated"),
+        DEPRECATED("deprecated"),
+        DELETED("deleted");
+
+        private final String statusType;
+
+        StatusType(final String statusType) {
+            this.statusType = statusType;
+        }
+
+        public String getKey() {
+            return statusType;
+        }
+
+        /**
+         * @return the Enum representation for the given string.
+         * @throws IllegalArgumentException if unknown string.
+         */
+        public static Bundle.StatusType fromString(String s) throws IllegalArgumentException {
+            return Arrays.stream(Bundle.StatusType.values())
+                    .filter(v -> v.statusType.equals(s))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Unknown value: " + s + " ; Valid options: "
+                            + Arrays.stream(values())
+                            .map(Bundle.StatusType::getKey)
+                            .collect(Collectors.joining(", "))));
+        }
+    }
+
 
     public Bundle() {
     }
@@ -54,14 +85,6 @@ public abstract class Bundle<T extends Identifiable> implements Identifiable {
 
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public String getStatus() {

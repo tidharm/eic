@@ -169,30 +169,17 @@
       "name": "originalId",
       "path": "//*[local-name()='metadata']/*[local-name()='originalId']/text()",
       "type": "java.lang.String"
-    },
-    {
-      "multivalued": false,
-      "name": "active",
-      "defaultValue": false,
-      "path": "//*[local-name()='infraService']/*[local-name()='active']/text()",
-      "type": "java.lang.Boolean"
-    },
+    }
     {
       "multivalued": false,
       "name": "status",
       "path": "//*[local-name()='infraService']/*[local-name()='status']/text()",
       "type": "java.lang.String"
-    },
-    {
-      "multivalued": false,
-      "name": "latest",
-      "path": "//*[local-name()='infraService']/*[local-name()='latest']/text()",
-      "type": "java.lang.Boolean"
     }
   ],
   "indexMapperClass": "eu.openminted.registry.core.index.DefaultIndexMapper",
   "name": "infra_service",
   "aliasGroup": "resourceTypes",
   "payloadType": "xml",
-  "schemaUrl": "https://raw.githubusercontent.com/eInfraCentral/eic/feature/catris/eic-registry-model/src/main/resources/schema1.xsd"
+  "schemaUrl": "https://raw.githubusercontent.com/eInfraCentral/eic/feature/statusFlag/eic-registry-model/src/main/resources/schema1.xsd"
 }

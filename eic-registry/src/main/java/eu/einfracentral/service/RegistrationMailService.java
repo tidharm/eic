@@ -1,9 +1,6 @@
 package eu.einfracentral.service;
 
-import eu.einfracentral.domain.Provider;
-import eu.einfracentral.domain.ProviderBundle;
-import eu.einfracentral.domain.Service;
-import eu.einfracentral.domain.User;
+import eu.einfracentral.domain.*;
 import eu.einfracentral.exception.ResourceNotFoundException;
 import eu.einfracentral.registry.manager.ProviderManager;
 import freemarker.template.Configuration;
@@ -79,7 +76,7 @@ public class RegistrationMailService {
             serviceTemplate = new Service();
             serviceTemplate.setName("");
         }
-        switch (Provider.States.fromString(providerBundle.getStatus())) {
+        switch (Provider.State.fromString(providerBundle.getProviderState())) {
             case PENDING_1:
                 providerSubject = String.format("[%s] Your application for registering [%s] " +
                         "as a new service provider has been received", projectName, providerName);
@@ -107,7 +104,7 @@ public class RegistrationMailService {
                         "[%s] – [%s]", projectName, providerBundle.getProvider().getName(), serviceTemplate.getName());
                 break;
             case APPROVED:
-                if (providerBundle.isActive()) {
+                if (providerBundle.getStatus().equals(Bundle.StatusType.PUBLISHED.getKey())) {
                     assert serviceTemplate != null;
                     providerSubject = String.format("[%s] Your service [%s] – [%s]  has been accepted",
                             projectName, providerName, serviceTemplate.getName());

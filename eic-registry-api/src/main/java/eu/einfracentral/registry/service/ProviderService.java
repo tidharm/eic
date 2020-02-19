@@ -49,5 +49,5 @@ public interface ProviderService<T, U extends Authentication> extends ResourceSe
     List<InfraService> getInactiveServices(String providerId);
 
 
-    T verifyProvider(String id, Provider.States status, Boolean active, U auth);
+    T verifyProvider(String id, Provider.State state, Boolean active, U auth);
 }

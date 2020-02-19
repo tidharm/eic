@@ -218,9 +218,9 @@ public class ProviderController {
     @PatchMapping(path = "verifyProvider/{id}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ProviderBundle> verifyProvider(@PathVariable("id") String id, @RequestParam(required = false) Boolean active,
-                                                         @RequestParam(required = false) Provider.States status, @ApiIgnore Authentication auth) {
-        ProviderBundle provider = providerManager.verifyProvider(id, status, active, auth);
-        logger.info("User '{}' updated Provider with name '{}' [status: {}] [active: {}]", auth, provider.getProvider().getName(), status, active);
+                                                         @RequestParam(required = false) Provider.State state, @ApiIgnore Authentication auth) {
+        ProviderBundle provider = providerManager.verifyProvider(id, state, active, auth);
+        logger.info("User '{}' updated Provider with name '{}' [status: {}] [active: {}]", auth, provider.getProvider().getName(), state, active);
         return new ResponseEntity<>(provider, HttpStatus.OK);
     }
 
@@ -238,9 +238,10 @@ public class ProviderController {
         ff.addFilter("providers", id);
         List<InfraService> services = infraServiceService.getAll(ff, auth).getResults();
         for (InfraService service : services) {
-            service.setActive(active);
+//            service.setActive(active);
 //            service.setStatus(status.getKey());
-            service.setLatest(active);
+//            service.setLatest(active);
+            service.setStatus(Bundle.StatusType.PUBLISHED.getKey());
             Metadata metadata = service.getMetadata();
             metadata.setModifiedBy("system");
             metadata.setModifiedAt(String.valueOf(System.currentTimeMillis()));
