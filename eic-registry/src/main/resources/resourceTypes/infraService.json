@@ -169,7 +169,7 @@
       "name": "originalId",
       "path": "//*[local-name()='metadata']/*[local-name()='originalId']/text()",
       "type": "java.lang.String"
-    }
+    },
     {
       "multivalued": false,
       "name": "status",
