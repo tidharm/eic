@@ -143,7 +143,7 @@ public class InfraServiceManager extends AbstractServiceManager implements Infra
     @Override
     public Paging<InfraService> getInactiveServices() {
         FacetFilter ff = new FacetFilter();
-        ff.addFilter("active", "false");
+        ff.addFilter("status", "deactivated");
         ff.setFrom(0);
         ff.setQuantity(10000);
         return getAll(ff, null);

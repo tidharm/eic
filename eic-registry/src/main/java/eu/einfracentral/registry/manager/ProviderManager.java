@@ -308,7 +308,16 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
     public List<Service> getServices(String providerId) {
         FacetFilter ff = new FacetFilter();
         ff.addFilter("providers", providerId);
-        ff.addFilter("latest", "true");
+        ff.addFilter("status", "published");
+        ff.setQuantity(10000);
+        return infraServiceService.getAll(ff, null).getResults().stream().map(InfraService::getService).collect(Collectors.toList());
+    }
+
+//    @Override
+    public List<Service> getDeactivatedServices(String providerId) {
+        FacetFilter ff = new FacetFilter();
+        ff.addFilter("providers", providerId);
+        ff.addFilter("status", "deactivated");
         ff.setQuantity(10000);
         return infraServiceService.getAll(ff, null).getResults().stream().map(InfraService::getService).collect(Collectors.toList());
     }
@@ -317,8 +326,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
     public List<Service> getActiveServices(String providerId) {
         FacetFilter ff = new FacetFilter();
         ff.addFilter("providers", providerId);
-        ff.addFilter("active", "true");
-        ff.addFilter("latest", "true");
+        ff.addFilter("status", "published");
         ff.setQuantity(10000);
         return infraServiceService.getAll(ff, null).getResults().stream().map(InfraService::getService).collect(Collectors.toList());
     }
@@ -338,7 +346,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
     @Override
     public List<ProviderBundle> getInactive() {
         FacetFilter ff = new FacetFilter();
-        ff.addFilter("active", false);
+        ff.addFilter("status", "deactivated");
         ff.setFrom(0);
         ff.setQuantity(10000);
         return getAll(ff, null).getResults();
@@ -348,7 +356,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
     public List<InfraService> getInactiveServices(String providerId) {
         FacetFilter ff = new FacetFilter();
         ff.addFilter("providers", providerId);
-        ff.addFilter("active", false);
+        ff.addFilter("status", "deactivated");
         ff.setFrom(0);
         ff.setQuantity(10000);
         return infraServiceService.getAll(ff, null).getResults();

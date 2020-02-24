@@ -16,9 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class RegistrationMailService {
@@ -70,11 +68,16 @@ public class RegistrationMailService {
         List<Service> serviceList = providerManager.getServices(providerBundle.getId());
         Service serviceTemplate = null;
         if (!serviceList.isEmpty()) {
-            root.put("service", serviceList.get(0));
             serviceTemplate = serviceList.get(0);
+            root.put("service", serviceTemplate);
         } else {
-            serviceTemplate = new Service();
-            serviceTemplate.setName("");
+            try {
+                serviceTemplate = providerManager.getDeactivatedServices(providerBundle.getProvider().getId()).get(0);
+                root.put("service", serviceTemplate);
+            } catch (IndexOutOfBoundsException e) {
+                serviceTemplate = new Service();
+                serviceTemplate.setName("");
+            }
         }
         switch (Provider.State.fromString(providerBundle.getProviderState())) {
             case PENDING_1:
@@ -90,14 +93,7 @@ public class RegistrationMailService {
                 regTeamSubject = String.format("[%s] The application of [%s] for registering " +
                         "as a new service provider has been accepted", projectName, providerName);
                 break;
-            case REJECTED:
-                providerSubject = String.format("[%s] Your application for registering [%s] " +
-                        "as a new service provider has been rejected", projectName, providerName);
-                regTeamSubject = String.format("[%s] The application of [%s] for registering " +
-                        "as a new service provider has been rejected", projectName, providerName);
-                break;
             case PENDING_2:
-                assert serviceTemplate != null;
                 providerSubject = String.format("[%s] Your service [%s] has been received " +
                         "and its approval is pending", projectName, serviceTemplate.getName());
                 regTeamSubject = String.format("[%s] Approve or reject the information about the new service: " +
@@ -126,12 +122,19 @@ public class RegistrationMailService {
                 regTeamSubject = String.format("[%s] The service [%s] has been rejected",
                         projectName, serviceTemplate.getId());
                 break;
+            case REJECTED:
+                providerSubject = String.format("[%s] Your application for registering [%s] " +
+                        "as a new service provider has been rejected", projectName, providerName);
+                regTeamSubject = String.format("[%s] The application of [%s] for registering " +
+                        "as a new service provider has been rejected", projectName, providerName);
+                break;
         }
 
         root.put("providerBundle", providerBundle);
         root.put("endpoint", endpoint);
         root.put("project", projectName);
         root.put("registrationEmail", registrationEmail);
+        root.put("state", providerBundle.getProviderState());
         // get the first user's information for the registration team email
         root.put("user", providerBundle.getProvider().getUsers().get(0));
 

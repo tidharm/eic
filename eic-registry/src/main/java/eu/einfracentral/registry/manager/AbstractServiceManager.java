@@ -420,7 +420,7 @@ public abstract class AbstractServiceManager extends AbstractGenericService<Infr
             return null;
         } else if ("latest".equals(serviceVersion)) {
             resources = searchService
-                    .cqlQuery(String.format("infra_service_id = \"%s\" AND latest = true", serviceId),
+                    .cqlQuery(String.format("infra_service_id = \"%s\" AND status = published", serviceId),
                             resourceType.getName(), 1, 0, "modifiedAt", "DESC");
         } else {
             resources = searchService
