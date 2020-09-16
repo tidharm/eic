@@ -10,13 +10,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: WhiteSourceDownload@3
-    script: |
-      curl -LJO https://github.com/whitesource/unified-agent-distribution/raw/master/standAlone/wss-unified-agent.config
-      curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar
-    displayName: WhiteSource Download
-
-- task: Maven@4
+- task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx3072m'
@@ -26,8 +20,3 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
-
-- task: WhiteSourceScan@5
-  script: |
-    java -jar wss-unified-agent.jar -product $(System.TeamProject) -project $(Build.DefinitionName) -apiKey $(wsApiKey)
-  displayName: WhiteSource Scan
